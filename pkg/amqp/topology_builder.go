@@ -57,14 +57,19 @@ func (builder *DefaultTopologyBuilder) BuildTopology(channel *amqp.Channel, queu
 
 	logger.Debug("Exchange declared", nil)
 
-	if err := channel.QueueBind(
-		queueName,
-		config.QueueBind.GenerateRoutingKey(queueName),
-		exchangeName,
-		config.QueueBind.NoWait,
-		config.QueueBind.Arguments,
-	); err != nil {
-		return errors.Wrap(err, "cannot bind queue")
+	routingKeys := config.QueueBind.GenerateRoutingKeys(queueName)
+
+	for _, key := range routingKeys {
+		if err := channel.QueueBind(
+			queueName,
+			key,
+			exchangeName,
+			config.QueueBind.NoWait,
+			config.QueueBind.Arguments,
+		); err != nil {
+			return errors.Wrap(err, "cannot bind queue")
+		}
 	}
+
 	return nil
 }

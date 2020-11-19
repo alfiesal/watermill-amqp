@@ -43,8 +43,8 @@ func NewDurablePubSubConfig(amqpURI string, generateQueueName QueueNameGenerator
 			Durable:      true,
 		},
 		QueueBind: QueueBindConfig{
-			GenerateRoutingKey: func(topic string) string {
-				return ""
+			GenerateRoutingKeys: func(topic string) []string {
+				return []string{""}
 			},
 		},
 		Publish: PublishConfig{
@@ -89,8 +89,8 @@ func NewNonDurablePubSubConfig(amqpURI string, generateQueueName QueueNameGenera
 			GenerateName: generateQueueName,
 		},
 		QueueBind: QueueBindConfig{
-			GenerateRoutingKey: func(topic string) string {
-				return ""
+			GenerateRoutingKeys: func(topic string) []string {
+				return []string{""}
 			},
 		},
 		Publish: PublishConfig{
@@ -135,8 +135,8 @@ func NewDurableQueueConfig(amqpURI string) Config {
 			Durable:      true,
 		},
 		QueueBind: QueueBindConfig{
-			GenerateRoutingKey: func(topic string) string {
-				return ""
+			GenerateRoutingKeys: func(topic string) []string {
+				return []string{""}
 			},
 		},
 		Publish: PublishConfig{
@@ -179,8 +179,8 @@ func NewNonDurableQueueConfig(amqpURI string) Config {
 			GenerateName: GenerateQueueNameTopicName,
 		},
 		QueueBind: QueueBindConfig{
-			GenerateRoutingKey: func(topic string) string {
-				return ""
+			GenerateRoutingKeys: func(topic string) []string {
+				return []string{""}
 			},
 		},
 		Publish: PublishConfig{
@@ -372,7 +372,7 @@ type QueueConfig struct {
 // be routed to the queue when the publishing routing key matches the binding
 // routing key.
 type QueueBindConfig struct {
-	GenerateRoutingKey func(topic string) string
+	GenerateRoutingKeys func(topic string) []string
 
 	// When noWait is false and the queue could not be bound, the channel will be
 	// closed with an error.
